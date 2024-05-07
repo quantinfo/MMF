@@ -1,0 +1,16 @@
+Metadata-Version: 2.1
+Name: pyMMF
+Version: 0.6
+Summary: Multimode optical fiber simulation package.
+Home-page: https://www.wavefrontshaping.net
+Author: Sebastien M. Popoff & Pavel Gostev
+Author-email: sebastien.popoff@espci.psl.eu
+License: MIT
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 3
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Education
+Classifier: Topic :: Scientific/Engineering
+Classifier: License :: OSI Approved :: MIT License
+
+Please read the documentation on Github.
