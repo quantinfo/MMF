@@ -8,10 +8,11 @@ Created on Wed May  8 09:04:24 2024
 import pyMMF
 import numpy as np
 import matplotlib.pyplot as plt
-#from matplotlib import rc
 
-#rc('figure', figsize=(18,9))
-#rc('text', usetex=True)
+plot_beta = 'n'  # plot propagation constant vs. mode number
+plot_single_mode = 'n' # plot a transverse profile of a single mode
+plot_sum_no_abs = 'y' # plot transverse profile with random phases, no absorption
+plot_sum_abs = 'y' # plot transverse profile with random phases, mode-dependent absorption
 
 ## Parameters
 NA = 0.22
@@ -54,28 +55,54 @@ modes['SA'] = {'betas':np.array(modes_semianalytical.betas)[idx],'profiles':[mod
 def sort(a):
     return np.flip(np.sort(a),axis=0)
 
-#plt.figure(); 
-plt.plot(sort(np.real(modes_semianalytical.betas)),
-         'r--',
-         label='Semi-analytical',
-         linewidth=2.)
-plt.xticks(fontsize = 20)
-plt.yticks(fontsize = 20)
-plt.title('Semi-analytical solutions' ,fontsize = 30)
-plt.ylabel('Propagation constant ', fontsize = 25) #$\beta$ (in $\mu$m$^{-1}$)
-plt.xlabel('Mode index', fontsize = 25)
-plt.legend(fontsize = 22,loc='upper right')
-plt.show()
+if (plot_beta == 'y'):
+    plt.plot(sort(np.real(modes_semianalytical.betas)),
+             'r--',
+             label='Semi-analytical',
+             linewidth=2.)
+    plt.xticks(fontsize = 20)
+    plt.yticks(fontsize = 20)
+    plt.title('Semi-analytical solutions' ,fontsize = 30)
+    plt.ylabel('Propagation constant ', fontsize = 25) #$\beta$ (in $\mu$m$^{-1}$)
+    plt.xlabel('Mode index', fontsize = 25)
+    plt.legend(fontsize = 22,loc='upper right')
+    plt.show()
 
-imode = 10
-plt.imshow(np.abs(modes['SA']['profiles'][imode].reshape([npoints]*2)))
-plt.show()
+if (plot_single_mode == 'y'):
+    imode = 10
+    plt.imshow(np.abs(modes['SA']['profiles'][imode].reshape([npoints]*2)))
+    plt.show()
 
-phases = np.exp(1.j * np.random.uniform(0, 2 * np.pi, n_modes))
+# select phases randomly for each mode and sum the fields, no absorption
+#
+# run this section of code repeatedly to have another random realization
+#
+phase_exp = np.exp(1.j * np.random.uniform(0, 2 * np.pi, n_modes))
 mode_sum = np.zeros(plt_pts,dtype=np.complex_)
 
 for i in range(n_modes):
-    mode_sum += phases[idx[i]]*modes_semianalytical.profiles[idx[i]] 
-    
-plt.imshow(np.abs(mode_sum.reshape([npoints]*2)))
-plt.show()
+    mode_sum += phase_exp[idx[i]]*modes_semianalytical.profiles[idx[i]] 
+
+if (plot_sum_no_abs == 'y'):    
+    plt.imshow(np.abs(mode_sum.reshape([npoints]*2))**2) # square to get intensity
+    plt.show()
+
+print('sum elements no absorption ',np.sum(np.abs(mode_sum)**2)/n_modes)
+
+# absorption term
+gamma = 10.e4   # in units of m^{-2}
+length = 75.  # in units of m
+
+# find the imaginary part of the propagation constant for each mode
+beta_i = np.zeros(n_modes) # save it in case it is needed later
+mode_sum_abs = np.zeros(plt_pts,dtype=np.complex_)
+
+for i in range(n_modes):
+    beta_i[idx[i]] = gamma/(modes_semianalytical.betas[idx[i]]*1.e6) # convert betas to units of m^{-1}
+    mode_sum_abs += np.exp(-length*beta_i[idx[i]])*phase_exp[idx[i]]*modes_semianalytical.profiles[idx[i]]
+
+print('sum elements with absorption ',np.sum(np.abs(mode_sum_abs)**2)/n_modes)
+
+if (plot_sum_no_abs == 'y'):    
+    plt.imshow(np.abs(mode_sum_abs.reshape([npoints]*2))**2) # square to get intensity
+    plt.show()
