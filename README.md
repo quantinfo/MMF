@@ -1,19 +1,3 @@
-Metadata-Version: 2.1
-Name: pyMMF
-Version: 0.6
-Summary: Multimode optical fiber simulation package.
-Home-page: https://www.wavefrontshaping.net
-Author: Sebastien M. Popoff & Pavel Gostev
-Author-email: sebastien.popoff@espci.psl.eu
-License: MIT
-Classifier: Programming Language :: Python :: 2
-Classifier: Programming Language :: Python :: 3
-Classifier: Development Status :: 3 - Alpha
-Classifier: Intended Audience :: Education
-Classifier: Topic :: Scientific/Engineering
-Classifier: License :: OSI Approved :: MIT License
-License-File: LICENSE
-
 # pyMMF
 
 Simple module to find numerically the propagation modes and their corresponding propagation constants
@@ -97,7 +81,7 @@ Use `solver.solve(mode = 'eig', ...)`
 
 ### WKB solver
 
-Find the propagation constants of parabolic GRIN multimode fibers under the WKB (Wentzelâ€“Kramersâ€“Brillouin) approximation [1]\_.
+Find the propagation constants of parabolic GRIN multimode fibers under the WKB (Wentzel–Kramers–Brillouin) approximation [1]\_.
 This approximation leads to inaccurate results for modes close to the cutoff,
 which can be a significant proportion of the modes for typical fibers.
 It is provided only for comparison.
