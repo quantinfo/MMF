@@ -10,6 +10,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 plot_beta = 'n'  # plot propagation constant vs. mode number
+plot_beta_dif = 'y' # plot the difference in propagation constants
 plot_single_mode = 'n' # plot a transverse profile of a single mode
 plot_sum_no_abs = 'y' # plot transverse profile with random phases, no absorption
 plot_sum_abs = 'y' # plot transverse profile with random phases, mode-dependent absorption
@@ -18,7 +19,7 @@ plot_sum_abs = 'y' # plot transverse profile with random phases, mode-dependent 
 NA = 0.22
 radius = 100. # in microns
 areaSize = 2.5*radius # 3.5*radius # calculate the field on an area larger than the diameter of the fiber
-npoints = 2**8 # resolution of the window
+npoints = 2**7 # resolution of the window
 n1 = 1.45
 wl = 1.55 # wavelength in microns
 
@@ -55,6 +56,7 @@ modes['SA'] = {'betas':np.array(modes_semianalytical.betas)[idx],'profiles':[mod
 def sort(a):
     return np.flip(np.sort(a),axis=0)
 
+plot_beta = 'y'
 if (plot_beta == 'y'):
     plt.plot(sort(np.real(modes_semianalytical.betas)),
              'r--',
@@ -68,6 +70,15 @@ if (plot_beta == 'y'):
     plt.legend(fontsize = 22,loc='upper right')
     plt.show()
 
+betas_diff = np.real(modes['SA']['betas'][0:n_modes-1])-np.real(modes['SA']['betas'][1:n_modes])
+print('mean betas diff: ',np.max(betas_diff))
+print('std betas diff: ',np.std(betas_diff))
+print('max betas diff: ',np.max(betas_diff))
+
+if (plot_beta_dif == 'y'):
+    plt.plot(betas_diff)
+    plt.show()
+    
 if (plot_single_mode == 'y'):
     imode = 10
     plt.imshow(np.abs(modes['SA']['profiles'][imode].reshape([npoints]*2)))
